@@ -99,7 +99,7 @@ class UrlShortenService {
         }
 
         const now = new Date(Date.now())
-        const isExpires = expiresAt > now
+        const isExpires = expiresAt < now
         if (isExpires) {
             throw ApiError.Gone('Время действия ссылки истекло')
         }

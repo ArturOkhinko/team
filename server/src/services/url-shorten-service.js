@@ -35,7 +35,7 @@ class UrlShortenService {
     async getInfoAboutUrl(alias) {
         const urlData = await UrlRepository.findByAliasWithClicks(alias)
         if (!urlData) {
-            throw ApiError.BadRequest('Ссылки с таким hash не существует')
+            throw ApiError.BadRequest('Ссылки с таким alias не существует')
         }
 
         return {

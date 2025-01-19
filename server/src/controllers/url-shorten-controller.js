@@ -11,15 +11,12 @@ class UrlShortController {
                 return next(ApiError.BadRequest(message, errors.errors))
             }
 
-            const { originalUrl, ttd, alias } = req.body
+            const { originalUrl, expiresAt, alias } = req.body
             if (!originalUrl) {
                 return next(ApiError.BadRequest('Отсутствует поле originalUrl'))
             }
-            if (ttd && !Number.isInteger(ttd)) {
-                return next(ApiError.BadRequest('Время жизни ссылки должно быть числом'))
-            }
 
-            const shortenUrl = await urlService.shorten(originalUrl, ttd, alias)
+            const shortenUrl = await urlService.shorten(originalUrl, expiresAt, alias)
             res.json(shortenUrl)
         }
         catch(e) {

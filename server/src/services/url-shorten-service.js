@@ -5,16 +5,14 @@ const crypto = require('crypto')
 const { LINK_TO_PLATFORM} = require('../consts.helper');
 const db = require('../models/index')
 
-const DEFAULT_TTL = 3600000
 class UrlShortenService {
-    async shorten(originalUrl, ttd, customAlias = '') {
+    async shorten(originalUrl, expiresAt, customAlias = '') {
         const urlData = await UrlRepository.findByUrl(originalUrl)
         if (urlData) {
             throw ApiError.BadRequest('Такая ссылка уже существует')
         }
 
         let alias = await this.getAliasForCreateShortedUrl(customAlias)
-        const expiresAt = Date.now() + (ttd || DEFAULT_TTL)
         await UrlRepository.create(originalUrl, alias, expiresAt)
         return LINK_TO_PLATFORM + alias
     }
@@ -31,7 +29,8 @@ class UrlShortenService {
             throw ApiError.NotFound()
         }
 
-        const isExpires = urlData.expiresAt < Date.now()
+        const now = new Date(Date.now())
+        const isExpires = urlData.expiresAt < now
         if (isExpires) {
             throw ApiError.Gone('Время действия ссылки истекло')
         }

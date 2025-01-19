@@ -19,7 +19,7 @@ const Url = sequelize.define('Url', {
     },
     expiresAt: {
         type: DataTypes.DATE,
-        allowNull: false,
+        allowNull: true,
     },
 }, {
     tableName: 'urls',

@@ -28,12 +28,7 @@ class UrlShortenService {
         if (!urlData) {
             throw ApiError.NotFound()
         }
-
-        const now = new Date(Date.now())
-        const isExpires = urlData.expiresAt < now
-        if (isExpires) {
-            throw ApiError.Gone('Время действия ссылки истекло')
-        }
+        this.checkExpires(urlData.expiresAt)
         return urlData
     }
 
@@ -96,6 +91,18 @@ class UrlShortenService {
             alias = crypto.randomBytes(3).toString('hex')
         }
         return alias
+    }
+
+    checkExpires(expiresAt) {
+        if (!expiresAt) {
+            return
+        }
+
+        const now = new Date(Date.now())
+        const isExpires = expiresAt > now
+        if (!isExpires) {
+            throw ApiError.Gone('Время действия ссылки истекло')
+        }
     }
 }
 
